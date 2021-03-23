@@ -17,6 +17,7 @@ end
 if ffi.os == 'Windows' then
 
     local kernel32 = ffi.load('kernel32.dll')
+    local CP_ACP = 0
     local CP_UTF8 = 65001
 
     pcall(ffi.cdef, [[
@@ -71,6 +72,22 @@ void Sleep(int ms);
         local count = kernel32.WideCharToMultiByte(CP_UTF8, 0, src, -1, buffer, needed, nil, nil)
         buffer[count] = 0
         return ffi.string(buffer, count - 1)
+    end
+
+    function M.utf8StringToMultiByte(str)
+        if #str == 0 then
+            return ''
+        end
+        local strWideChar = M.toWideChar(str)
+        local nNum = kernel32.WideCharToMultiByte(CP_ACP, 0, strWideChar, -1, nil, 0, nil, nil)
+        if nNum > 0 then
+            local ansiString = ffi.new('char[?]', nNum + 1)
+            kernel32.WideCharToMultiByte(CP_ACP, 0, strWideChar, -1, ansiString, nNum + 1, nil, nil)
+            return ffi.string(ansiString)
+        else
+            -- failed
+            return str
+        end
     end
 
     function M.sleep(ms)
