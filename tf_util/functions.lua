@@ -367,16 +367,15 @@ function math.round(value)
 end
 
 local pi_div_180 = math.pi / 180
-function math.angle2radian(angle)
+function math.ang2rad(angle)
     return angle * pi_div_180
 end
-
-function math.radian2angle(radian)
-    return radian * 180 / math.pi
+function math.rad2ang(radian)
+    return radian / pi_div_180
 end
 
 function io.exists(path)
-    local file = io.open(path, "r")
+    local file = io.open_u8(path, "r")
     if file then
         io.close(file)
         return true
@@ -385,10 +384,10 @@ function io.exists(path)
 end
 
 function io.readfile(path)
-    local file = io.open(path, "r")
+    local file = io.open_u8(path, "rb")
     if file then
         local content = file:read("*a")
-        io.close(file)
+        file:close()
         return content
     end
     return nil
@@ -396,49 +395,21 @@ end
 
 function io.writefile(path, content, mode)
     mode = mode or "w+b"
-    local file = io.open(path, mode)
+    local file = io.open_u8(path, mode)
     if file then
         if file:write(content) == nil then
             return false
         end
-        io.close(file)
+        file:close()
         return true
     else
         return false
     end
 end
 
-function io.pathinfo(path)
-    local pos = string.len(path)
-    local extpos = pos + 1
-    while pos > 0 do
-        local b = string.byte(path, pos)
-        if b == 46 then
-            -- 46 = char "."
-            extpos = pos
-        elseif b == 47 then
-            -- 47 = char "/"
-            break
-        end
-        pos = pos - 1
-    end
-
-    local dirname = string.sub(path, 1, pos)
-    local filename = string.sub(path, pos + 1)
-    extpos = extpos - pos
-    local basename = string.sub(filename, 1, extpos - 1)
-    local extname = string.sub(filename, extpos)
-    return {
-        dirname  = dirname,
-        filename = filename,
-        basename = basename,
-        extname  = extname
-    }
-end
-
 function io.filesize(path)
     local size = false
-    local file = io.open(path, "r")
+    local file = io.open_u8(path, "r")
     if file then
         local current = file:seek()
         size = file:seek("end")
@@ -446,6 +417,13 @@ function io.filesize(path)
         io.close(file)
     end
     return size
+end
+
+function io.open_u8(path, mode)
+    if ffi.os == 'Windows' then
+        path = require('tf_util.helper').utf8StringToMultiByte(path)
+    end
+    return io.open(path, mode)
 end
 
 local insert = table.insert
