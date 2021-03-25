@@ -2,9 +2,9 @@ local ffi = require('ffi')
 local helper = require('tf_util.helper')
 
 ffi.cdef(helper.loadFileString('tf_headers/tf_attrtype.h'))
-ffi.cdef(helper.loadFileString('mx_headers/tf_datatype.h'))
-ffi.cdef(helper.loadFileString('mx_headers/tf_status.h'))
-ffi.cdef(helper.loadFileString('mx_headers/tf_tensor.h'))
+ffi.cdef(helper.loadFileString('tf_headers/tf_datatype.h'))
+ffi.cdef(helper.loadFileString('tf_headers/tf_status.h'))
+ffi.cdef(helper.loadFileString('tf_headers/tf_tensor.h'))
 ffi.cdef(helper.loadFileString('tf_headers/c_api.h'))
 ffi.cdef(helper.loadFileString('tf_headers/c_api_eager.h'))
 
