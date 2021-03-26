@@ -78,7 +78,7 @@ int raise(int sig);
 
 // stdio
 
-//typedef struct FILE_ { void* _Placeholder; } FILE;
+typedef struct FILE_ { void* _Placeholder; } FILE;
 typedef int64_t fpos_t;
 
 int fclose(FILE *stream);
@@ -165,8 +165,8 @@ long int labs(long int x);
 int rand(void);
 void srand(unsigned int seed);
 int mblen(const char *str, size_t n);
-size_t mbstowcs(schar_t *pwcs, const char *str, size_t n);
-int mbtowc(whcar_t *pwc, const char *str, size_t n);
+size_t mbstowcs(wchar_t *pwcs, const char *str, size_t n);
+int mbtowc(wchar_t *pwc, const char *str, size_t n);
 size_t wcstombs(char *str, const wchar_t *pwcs, size_t n);
 int wctomb(char *str, wchar_t wchar);
 
