@@ -325,7 +325,11 @@ function isinstance(obj, cls)
     elseif cls == '' then
         return type(obj) == 'string'
     end
-    return iskindof(obj, getclassname(cls))
+    if type(cls) == 'string' then
+        return iskindof(obj, cls)
+    else
+        return iskindof(obj, getclassname(cls))
+    end
 end
 
 function issubclass(cls, base)
