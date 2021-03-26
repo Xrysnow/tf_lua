@@ -18,6 +18,14 @@ function M.DataTypeSize(dt)
     return M.dataTypeSize(dt)
 end
 
+
+function M.tfBool(value)
+    if type(value) ~= 'number' and type(value) ~= 'cdata' then
+        value = value and 1 or 0
+    end
+    return value
+end
+
 function M.dataType(ty)
     if type(ty) == 'string' then
         local val = require('tf._enum').TF_DataType[ty:upper()]
