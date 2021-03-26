@@ -162,7 +162,8 @@ function M.call(name, ...)
             end
         end
     end
-    return _lib[name](unpack(args, 1, argc))
+    --return _lib[name](unpack(args, 1, argc))
+    return _lib[name](...)
 end
 
 function M.caller(lib)
