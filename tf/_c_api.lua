@@ -2883,7 +2883,6 @@ _TYPEDEF("TF_Tensor", "struct TF_Tensor")
 --- May return NULL (and invoke the deallocator) if the provided data buffer
 --- (data, len) is inconsistent with a tensor of the given TF_DataType
 --- and the shape specified by (dima, num_dims).
---- void (*deallocator)(void* data, size_t len, void* arg),
 ---
 ---@param type TF_DataType @(TF_DataType)
 ---@param dims ffi.cdata @(const int64_t *)
