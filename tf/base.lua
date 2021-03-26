@@ -18,6 +18,72 @@ function M.DataTypeSize(dt)
     return M.dataTypeSize(dt)
 end
 
+function M.packDims(dims, num_dims)
+    if type(dims) == 'table' then
+        num_dims = #dims
+        local c_dims = ffi.new('int64_t[?]', num_dims)
+        for i = 1, num_dims do
+            c_dims[i - 1] = dims[i]
+        end
+        dims = c_dims
+    elseif dims == nil then
+        return nil, -1
+    end
+    return dims, num_dims
+end
+
+function M.unpackDims(dims, num_dims)
+    if type(dims) ~= 'cdata' then
+        return dims
+    end
+    local ret = {}
+    for i = 1, num_dims do
+        ret[i] = dims[i - 1]
+    end
+    return ret
+end
+
+function M.packValues(ctype, values, size)
+    local n
+    if type(values) == 'table' then
+        n = size or #values
+        local c_values = ffi.new(ctype .. '[?]', n)
+        for i = 1, n do
+            c_values[i - 1] = values[i]
+        end
+        values = c_values
+    end
+    if n == 0 then
+        return nil, 0
+    end
+    return values, n
+end
+
+function M.packDataTypes(values, size)
+    local n
+    if type(values) == 'table' then
+        n = size or #values
+        local c_values = ffi.new('TF_DataType[?]', n)
+        for i = 1, n do
+            c_values[i - 1] = M.dataType(values[i])
+        end
+        values = c_values
+    end
+    return values, n
+end
+
+function M.packHandles(ctype, values)
+    local n
+    if type(values) == 'table' then
+        n = #values
+        local c_values = ffi.new(ctype .. '[?]', n)
+        for i = 1, n do
+            c_values[i - 1] = handle(values[i])
+        end
+        values = c_values
+    end
+    return values, n
+end
 
 function M.tfBool(value)
     if type(value) ~= 'number' and type(value) ~= 'cdata' then
