@@ -5,7 +5,7 @@
 ---
 
 
-local ffi = ffi-- or require('ffi')
+local ffi = require('ffi')
 
 ffi.nullptr = ffi.cast('void*', 0)
 
