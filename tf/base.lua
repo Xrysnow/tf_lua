@@ -1,7 +1,10 @@
 --
 local M = {}
-local lib = require('tf._c_api')
+local lib = require('tf.c._c_api')
 M._lib = lib
+M._libeager = require('tf.c._c_api_eager')
+M._libex = require('tf.c._c_api_experimental')
+M._libeagerex = require('tf.c._c_api_eager_experimental')
 --- TF_Version returns a string describing version information of the
 --- TensorFlow library. TensorFlow using semantic versioning.
 ---@return string

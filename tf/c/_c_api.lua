@@ -1,10 +1,10 @@
 --
 
 local M = {}
-local _TYPEDEF = require('ctypes').typedef
-local _ENUMDEF = require('ctypes').enumdef
-local _CALL = require('ctypes').caller(require('tf._lib'))
-local _FUNCDEF = require('ctypes').addDef
+local _TYPEDEF = require('tf.c.ctypes').typedef
+local _ENUMDEF = require('tf.c.ctypes').enumdef
+local _CALL = require('tf.c.ctypes').caller(require('tf.c._lib'))
+local _FUNCDEF = require('tf.c.ctypes').addDef
 -- header/c_api.h
 
 --

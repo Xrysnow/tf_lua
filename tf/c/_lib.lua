@@ -1,16 +1,16 @@
 local ffi = require('ffi')
 local helper = require('tf_util.helper')
 
-ffi.cdef(helper.loadFileString('tf_headers/tf_attrtype.h'))
-ffi.cdef(helper.loadFileString('tf_headers/tf_datatype.h'))
-ffi.cdef(helper.loadFileString('tf_headers/tf_status.h'))
-ffi.cdef(helper.loadFileString('tf_headers/tf_tensor.h'))
-ffi.cdef(helper.loadFileString('tf_headers/c_api.h'))
-ffi.cdef(helper.loadFileString('tf_headers/c_api_eager.h'))
+ffi.cdef(helper.loadFileString('tf/headers/tf_attrtype.h'))
+ffi.cdef(helper.loadFileString('tf/headers/tf_datatype.h'))
+ffi.cdef(helper.loadFileString('tf/headers/tf_status.h'))
+ffi.cdef(helper.loadFileString('tf/headers/tf_tensor.h'))
+ffi.cdef(helper.loadFileString('tf/headers/c_api.h'))
+ffi.cdef(helper.loadFileString('tf/headers/c_api_eager.h'))
 
 local is_win = ffi.os == 'Windows'
 
-print('start load libtensorflow')
+print('load libtensorflow...')
 
 local lib
 if is_win then
@@ -19,7 +19,7 @@ else
     lib = ffi.load('libtensorflow.so')
 end
 
-print('finish load libtensorflow')
+--print('finish load libtensorflow')
 
 ---@class TF_Buffer
 local TF_Buffer = {}
