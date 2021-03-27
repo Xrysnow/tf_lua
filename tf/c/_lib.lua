@@ -7,6 +7,8 @@ ffi.cdef(helper.loadFileString('tf/headers/tf_status.h'))
 ffi.cdef(helper.loadFileString('tf/headers/tf_tensor.h'))
 ffi.cdef(helper.loadFileString('tf/headers/c_api.h'))
 ffi.cdef(helper.loadFileString('tf/headers/c_api_eager.h'))
+ffi.cdef(helper.loadFileString('tf/headers/c_api_experimental.h'))
+ffi.cdef(helper.loadFileString('tf/headers/c_api_eager_experimental.h'))
 
 local is_win = ffi.os == 'Windows'
 
