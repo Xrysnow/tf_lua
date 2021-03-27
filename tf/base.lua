@@ -26,7 +26,11 @@ function M.packDims(dims, num_dims)
         num_dims = #dims
         local c_dims = ffi.new('int64_t[?]', num_dims)
         for i = 1, num_dims do
-            c_dims[i - 1] = dims[i]
+            if dims[i] == false then
+                c_dims[i - 1] = -1
+            else
+                c_dims[i - 1] = dims[i]
+            end
         end
         dims = c_dims
     elseif dims == nil then
@@ -81,7 +85,11 @@ function M.packHandles(ctype, values)
         n = #values
         local c_values = ffi.new(ctype .. '[?]', n)
         for i = 1, n do
-            c_values[i - 1] = handle(values[i])
+            if values[i] == false then
+                c_values[i - 1] = nil
+            else
+                c_values[i - 1] = handle(values[i])
+            end
         end
         values = c_values
     end
