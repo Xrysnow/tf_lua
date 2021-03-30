@@ -120,9 +120,41 @@ function M.dataTypeString(ty)
                 return k:lower()
             end
         end
-        error(("invalid data type %d"):format(ty))
+        error(("invalid data type %s"):format(ty))
     end
     return ty
+end
+
+local _ctype_map = {
+    'float', -- FLOAT
+    'double', -- DOUBLE
+    'int32_t', -- INT32
+    'uint8_t', -- UINT8
+    'int16_t', -- INT16
+    'int8_t', -- INT8
+    'TF_TString', -- STRING
+    false, -- COMPLEX64
+    false, -- COMPLEX
+    'int64_t', -- INT64
+    'unsigned char', -- BOOL
+    false, -- QINT8
+    false, -- QUINT8
+    false, -- QINT32
+    false, -- BFLOAT16
+    false, -- QINT16
+    false, -- QUINT16
+    'uint16_t', -- UINT16
+    false, -- COMPLEX128
+    false, -- HALF
+    false, -- RESOURCE
+    false, -- VARIANT
+    'uint32_t', -- UINT32
+    'uint64_t', -- UINT64
+}
+
+function M.ctypeFromDataType(ty)
+    ty = M.dataType(ty)
+    return _ctype_map[tonumber(ty)]
 end
 
 return M
