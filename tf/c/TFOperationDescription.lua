@@ -56,7 +56,7 @@ end
 
 --- For inputs that take a list of tensors.
 --- inputs must point to TF_Output[num_inputs].
----@param input tf.TFOutput[]|tf.TFOperation[]
+---@param inputs tf.TFOutput[]|tf.TFOperation[]
 function M:addInputList(inputs)
     local n = #inputs
     if n == 0 then
