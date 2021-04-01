@@ -27,7 +27,7 @@ function M:opType()
     return self._opType
 end
 
-function M:device()
+function M:getDevice()
     ---@type string
     self._device = self._device or ffi.string(lib.TF_OperationDevice(self.handle))
     return self._device ~= '' and self._device or nil
