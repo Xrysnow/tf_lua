@@ -89,7 +89,7 @@ end
 
 --- `value` must point to a string of length `length` bytes.
 function M:setAttrString(attr_name, value, length)
-    lib.TF_SetAttrString(self.handle, attr_name, value, length)
+    lib.TF_SetAttrString(self.handle, attr_name, value, length or #value)
 end
 
 --- `values` and `lengths` each must have lengths `num_values`.
