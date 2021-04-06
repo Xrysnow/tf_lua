@@ -79,6 +79,8 @@ def parse_tf_doc(tf_func_doc):
         elif meet_ret and line != pattern_ret:
             ret.append(line.strip())
         else:
+            if line.startswith('  '):
+                line = '> ' + line[2:]
             doc.append('--- ' + line)
     arg_doc = {}
     for a in arg:
@@ -120,7 +122,7 @@ class Attribute:
             'string': 'string',
             'type'  : 'number|string',
             'bool'  : 'boolean',
-            'tensor': 'tfl.Tensor'
+            'tensor': 'tf.Tensor'
         }[self.type]
         ctype = {
             'func'  : '',
@@ -188,7 +190,7 @@ class Attribute:
                 'string': 'op:setAttrString("{orig:}", {0});',
                 'type'  : 'op:setAttrType("{orig:}", {0});', 
                 'bool'  : 'op:setAttrBool("{orig:}", {0});',
-                'tensor': 'op:setAttrTensor("{orig:}", {0}._tensor or {0});',
+                'tensor': 'op:setAttrTensor("{orig:}", {0});',
                 'n_attr': 'op:setAttrInt("{orig:}", #{n_attr:});'
             }[self.type].format(self.var_name, orig=self.name, n_attr=self.number_attr)).replace('\n', '\n\t')    
 
@@ -229,21 +231,21 @@ class Operation:
         \tlocal op = get_context():newOp("{}")
         \t{}
         \t{}
-        \treturn parse_execute_results(op:execute())
+        \treturn parse_execute_results(op:execute(), {})
         end
         ''')
 
         # Add single input template
-        add_inputs = textwrap.dedent('op:addInput({0}._handle or {0})')
+        add_inputs = textwrap.dedent('op:addInput({0})')
         add_inputs_list = textwrap.dedent('op:addInputList(pack_tfe_handle({0}))')
 
         # Return type of the function
         # out = 'tensor' if len(self.op.output_arg) else 'void'
         num_output = len(self.op.output_arg)
         if num_output == 1:
-            out = '---@return tfl.Tensor'
+            out = '---@return tf.Tensor'
         elif num_output > 1:
-            out = '---@return tfl.Tensor[]'
+            out = '---@return tf.Tensor[]'
         else:
             out = '---@return nil'
 
@@ -283,9 +285,9 @@ class Operation:
         inp_docs = []
         for i, n in enumerate(self.inputs):
             if len(n.number_attr) or len(n.type_list_attr):
-                doc = '---@param {} tfl.Tensor[]'.format(proc_var_name(n.name))
+                doc = '---@param {} tf.Tensor[]'.format(proc_var_name(n.name))
             else:
-                doc = '---@param {} tfl.Tensor'.format(proc_var_name(n.name.replace('tensor', 'input_tensor')))
+                doc = '---@param {} tf.Tensor'.format(proc_var_name(n.name.replace('tensor', 'input_tensor')))
             par_doc = self.tf_doc_arg.get(n.name, None)
             if par_doc:
                 doc += ' @' + par_doc
@@ -345,35 +347,16 @@ class Operation:
         if self.tf_doc_ret != '':
             out += ' @ ' + self.tf_doc_ret.strip()
 
-        return template.format(func_doc, out, snk, inp, atr, attr_default, opn, inp_code, atr_code)
+        return template.format(func_doc, out, snk, inp, atr, attr_default, opn, inp_code, atr_code, num_output)
 
 
 ops_file = textwrap.dedent('''
---- TensorFlow raw_ops mappings
+---@class tf.raw_ops
 local M = {{}}
 local float_infinity = math.huge
-local get_context = require('tfl.context').get_context
-local TFLTensor = require('tfl.Tensor')
-local function pack_tfe_handle(tensors)
-    local ret = {{}}
-    for i = 1, #tensors do
-        ret[i] = tensors[i]._handle or tensors[i]
-    end
-    return ret
-end
-local function parse_execute_results(res)
-    if #res == 0 then
-        return nil
-    elseif #res == 1 then
-        return require('tfl.Tensor')(res[1])
-    else
-        local ret = {{}}
-        for i = 1, #res do
-            ret[i] = require('tfl.Tensor')(res[i])
-        end
-        return ret
-    end
-end
+local get_context = require('tf.util_ops').get_context
+local parse_execute_results = require('tf.util_ops').parse_execute_results
+local pack_tfe_handle = require('tf.util_ops').pack_tfe_handle
 
 --
 
