@@ -1,9 +1,9 @@
 ---@class tf.TFOperationDescription
 --- Operation being built. The underlying graph must outlive this.
 local M = class('tf.TFOperationDescription')
-local lib = require('tf.c._c_api')
-local Status = require('tf.c.TFStatus')
 local base = require('tf.base')
+local lib = base._lib
+local Status = require('tf.c.TFStatus')
 
 function M:ctor(hdl)
     assert(hdl and not ffi.isnullptr(hdl))
