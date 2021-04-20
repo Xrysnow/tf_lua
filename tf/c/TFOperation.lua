@@ -3,10 +3,10 @@
 --- deleted -- in particular adding a new operation to the graph does not
 --- invalidate old TF_Operation* pointers.
 local M = class('tf.TFOperation')
-local lib = require('tf.c._c_api')
-local libex = require('tf.c._c_api_experimental')
-local Status = require('tf.c.TFStatus')
 local base = require('tf.base')
+local lib = base._lib
+local libex = base._libex
+local Status = require('tf.c.TFStatus')
 
 function M:ctor(hdl)
     assert(not ffi.isnullptr(hdl))
