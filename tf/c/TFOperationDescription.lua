@@ -1,4 +1,4 @@
----@class tf.TFOperationDescription
+---@class tf.TFOperationDescription:tf.AbstractOperation
 --- Operation being built. The underlying graph must outlive this.
 local M = class('tf.TFOperationDescription')
 local base = require('tf.base')
@@ -271,7 +271,10 @@ function M.NewOperation(graph, op_type, oper_name)
     if ffi.isnullptr(p) then
         return nil
     end
-    return M(p)
+    local ret = M(p)
+    ret._type = op_type
+    ret._name = oper_name
+    return ret
 end
 
 return M
