@@ -50,6 +50,19 @@ function M.unpackDims(dims, num_dims)
     return ret
 end
 
+---@param t tf.TFTensor
+function M.unpack1DTensor(t)
+    assert(t:numDims() == 1)
+    local n = tonumber(t:dim(0))
+    local ctype = assert(M.ctypeFromDataType(t:dtype()))
+    local cdata = ffi.cast(ctype .. '*', t:data())
+    local ret = {}
+    for i = 1, n do
+        ret[i] = tonumber(cdata[i - 1])
+    end
+    return ret
+end
+
 function M.packValues(ctype, values, size)
     local n
     if type(values) == 'table' then
