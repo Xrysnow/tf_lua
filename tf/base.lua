@@ -170,4 +170,87 @@ function M.ctypeFromDataType(ty)
     return _ctype_map[tonumber(ty)]
 end
 
+--
+
+function M.devicePlacementPolicy(ty)
+    if type(ty) == 'string' then
+        local val = require('tf._enum').TFE_ContextDevicePlacementPolicy[ty:upper()]
+        assert(val, ("invalid argument %q"):format(ty))
+        ty = val
+    end
+    return ty
+end
+
+function M.devicePlacementPolicyString(ty)
+    if type(ty) ~= 'string' then
+        local val = tonumber(ty)
+        for k, v in pairs(require('tf._enum').TFE_ContextDevicePlacementPolicy) do
+            if v == val then
+                return k:lower()
+            end
+        end
+        error(("invalid argument %s"):format(ty))
+    end
+    return ty
+end
+
+--
+
+--- Get the OpList of all OpDefs defined in this address space.
+--- Returns a TF_Buffer, ownership of which is transferred to the caller
+--- (and can be freed using TF_DeleteBuffer).
+---
+--- The data in the buffer will be the serialized OpList proto for ops registered
+--- in this address space.
+function M.GetAllOpList()
+    local p = lib.TF_GetAllOpList()
+    if ffi.isnullptr(p) then
+        return nil
+    end
+    return require('tf.c.TFBuffer')(p)
+end
+--- Returns a serialized KernelList protocol buffer containing KernelDefs for all
+--- registered kernels.
+function M.GetAllRegisteredKernels()
+    local s = require('tf.c.TFStatus')()
+    local p = lib.TF_GetAllRegisteredKernels(handle(s))
+    s:assert()
+    if ffi.isnullptr(p) then
+        return nil
+    end
+    return require('tf.c.TFBuffer')(p)
+end
+--- Returns a serialized KernelList protocol buffer containing KernelDefs for all
+--- kernels registered for the operation named `name`.
+---@param name string
+function M.GetRegisteredKernelsForOp(name)
+    local s = require('tf.c.TFStatus')()
+    local p = lib.TF_GetRegisteredKernelsForOp(name, handle(s))
+    s:assert()
+    if ffi.isnullptr(p) then
+        return nil
+    end
+    return require('tf.c.TFBuffer')(p)
+end
+
+local _listener
+--- Register a listener method that processes printed messages.
+---
+--- If any listeners are registered, the print operator will call all listeners
+--- with the printed messages and immediately return without writing to the
+--- logs.
+function M.RegisterLogListener(listener)
+    lib.TF_RegisterLogListener(listener)
+    _listener = listener
+end
+--- Register a FileSystem plugin from filename `plugin_filename`.
+---
+--- On success, place OK in status.
+--- On failure, place an error status in status.
+function M.RegisterFilesystemPlugin(plugin_filename)
+    local s = require('tf.c.TFStatus')()
+    lib.TF_RegisterFilesystemPlugin(plugin_filename, handle(s))
+    s:assert()
+end
+
 return M
